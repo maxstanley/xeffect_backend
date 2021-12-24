@@ -1,0 +1,10 @@
+# Ignore files without extensions.
+*
+!*.*
+!*/
+
+*.tfstate
+*.tfstate.backup
+*.zip
+.terraform/
+
