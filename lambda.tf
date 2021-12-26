@@ -81,6 +81,11 @@ resource "aws_api_gateway_deployment" "version_deploy" {
   stage_name = "v1"
 }
 
+resource "aws_api_gateway_base_path_mapping" "xeffect" {
+  api_id = aws_api_gateway_rest_api.api.id
+  domain_name = aws_api_gateway_domain_name.xeffect.domain_name
+}
+
 output "url" {
   value = "${aws_api_gateway_deployment.version_deploy.invoke_url}${aws_api_gateway_resource.resource.path}"
 }
