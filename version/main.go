@@ -17,7 +17,7 @@ func handleVersionEvent(ctx context.Context, event Request) (Response, error) {
 		Headers: map[string]string{
 			"Content-Type": "text/plain",
 		},
-		Body: "0.1.0",
+		Body: "0.2.0",
 	}, nil
 }
 

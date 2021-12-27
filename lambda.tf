@@ -79,8 +79,14 @@ resource "aws_api_gateway_deployment" "v1" {
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_integration.version,
-      aws_api_gateway_integration.goal_create
+      aws_api_gateway_integration.goal_create,
+      aws_api_gateway_integration.goal_get_all,
+      aws_api_gateway_integration.goal_get,
     ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -105,6 +111,24 @@ resource "aws_lambda_permission" "goal_create" {
   statement_id = "AllowExectionFromAPIGateway"
   action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.goal_create.function_name
+  principal = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "goal_get_all" {
+  statement_id = "AllowExectionFromAPIGateway"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.goal_get_all.function_name
+  principal = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "goal_get" {
+  statement_id = "AllowExectionFromAPIGateway"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.goal_get.function_name
   principal = "apigateway.amazonaws.com"
 
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
