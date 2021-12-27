@@ -1,0 +1,192 @@
+openapi: 3.0.0
+info:
+  title: XEffect
+  license:
+    name: MIT
+  version: 0.2.0
+servers:
+  - url: https://api.maxstanley.uk/v1
+    x-amazon-apigateway-endpoint-configuration:
+      disableExecuteApiEndpoint: true
+
+paths:
+  /xeffect/goals:
+    get:
+      summary: Lists all Goals
+      tags:
+        - Goals
+      responses:
+        "200":
+          description: An array of goals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goals"
+      x-amazon-apigateway-integration:
+        uri: ${invoke_arn.goal_get_all}
+        httpMethod: "POST"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        type: "aws_proxy"
+
+    post:
+      summary: Create a Goal
+      tags:
+        - Goals
+      requestBody:
+        description: Goal to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewGoal"
+      responses:
+        "201":
+          description: Null response
+      x-amazon-apigateway-integration:
+        uri: ${invoke_arn.goal_create}
+        httpMethod: "POST"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        type: "aws_proxy"
+          
+    options:
+      summary: CORS
+      description: Enable CORS by returning correct headers
+      tags:
+        - CORS
+      responses:
+        200:
+          $ref: "#/components/responses/200CORS"
+      x-amazon-apigateway-integration:
+        type: mock
+        timeoutInMillis: 29000
+        passthroughBehavior: "when_no_match"
+        requestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''*'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+
+  /xeffect/goals/{goalId}:
+    get:
+      summary: Returns information for a specific Goal
+      tags:
+        - Goals
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          description: The id of the goal to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The Goal information
+      x-amazon-apigateway-integration:
+        uri: ${invoke_arn.goal_get}
+        httpMethod: "POST"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        type: "aws_proxy"
+
+  /xeffect/version:
+    get:
+      summary: Display current version
+      tags:
+        - Meta
+      responses:
+        "200":
+          description: The current deployed version
+      x-amazon-apigateway-integration:
+        uri: ${invoke_arn.version}
+        httpMethod: "POST"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        type: "aws_proxy"
+          
+    options:
+      summary: CORS
+      description: Enable CORS by returning correct headers
+      tags:
+        - CORS
+      responses:
+        200:
+          $ref: "#/components/responses/200CORS"
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: '{ "statusCode" : 200 }'
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''*'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: '{}'
+
+components:
+  schemas:
+    NewGoal:
+      type: object
+      required:
+        - title
+        - motivation
+      properties:
+        title:
+          type: string
+        motivation:
+          type: string
+    Goal:
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              type: string
+        - $ref: "#/components/schemas/NewGoal"
+    Goals:
+      type: array
+      items:
+        $ref: "#/components/schemas/Goal"
+    GoalAction:
+      allOf:
+        - type: object
+          required:
+            - action
+          properties:
+            action:
+              type: string
+              enum: [ mark_completed ]
+        - oneOf:
+          - $ref: "#/components/schemas/GoalActionMarkCompleted"
+    GoalActionMarkCompleted:
+      type: object
+      properties:
+        date:
+          type: string
+        isCompleted:
+          type: boolean
+          
+  responses:
+    200CORS:
+      description: Default response for CORS method
+      headers:
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+            description: URIs that may access the resource
+        Access-Control-Allow-Methods:
+          schema:
+            type: string
+            description: Methods that may be used to access the resource
+        Access-Control-Allow-Headers:
+          schema:
+            type: string
+            description: Headers that may be used in the request to the resource
+      content: {}

@@ -27,7 +27,8 @@ func returnError(err error) (Response, error) {
 		StatusCode:      400,
 		IsBase64Encoded: false,
 		Headers: map[string]string{
-			"Content-Type": "text/plain",
+			"Content-Type":                "text/plain",
+			"Access-Control-Allow-Origin": "*",
 		},
 		Body: err.Error(),
 	}, nil
@@ -70,7 +71,8 @@ func handleGoalGetEvent(ctx context.Context, event Request) (Response, error) {
 		StatusCode:      200,
 		IsBase64Encoded: false,
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type":                "application/json",
+			"Access-Control-Allow-Origin": "*",
 		},
 		Body: string(body),
 	}, nil

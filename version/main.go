@@ -15,7 +15,8 @@ func handleVersionEvent(ctx context.Context, event Request) (Response, error) {
 		StatusCode:      200,
 		IsBase64Encoded: false,
 		Headers: map[string]string{
-			"Content-Type": "text/plain",
+			"Content-Type":                "text/plain",
+			"Access-Control-Allow-Origin": "*",
 		},
 		Body: "0.2.0",
 	}, nil
