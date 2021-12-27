@@ -59,10 +59,12 @@ resource "aws_api_gateway_rest_api" "api" {
   disable_execute_api_endpoint = true
 
   body = templatefile("${path.root}/openapi.yaml", {
-    invoke_arn_version = aws_lambda_function.xeffect_version.invoke_arn
-    invoke_arn_goal_get_all = aws_lambda_function.goal_get_all.invoke_arn
-    invoke_arn_goal_create = aws_lambda_function.goal_create.invoke_arn
-    invoke_arn_goal_get = aws_lambda_function.goal_get.invoke_arn
+    invoke_arn = {
+      version = aws_lambda_function.xeffect_version.invoke_arn
+      goal_get_all = aws_lambda_function.goal_get_all.invoke_arn
+      goal_create = aws_lambda_function.goal_create.invoke_arn
+      goal_get = aws_lambda_function.goal_get.invoke_arn
+    }
   })
 }
 
