@@ -31,7 +31,8 @@ func returnError(err error) (Response, error) {
 		StatusCode:      400,
 		IsBase64Encoded: false,
 		Headers: map[string]string{
-			"Content-Type": "text/plain",
+			"Content-Type":                "text/plain",
+			"Access-Control-Allow-Origin": "*",
 		},
 		Body: err.Error(),
 	}, nil
@@ -94,6 +95,9 @@ func handleGoalCreationEvent(ctx context.Context, event Request) (Response, erro
 
 	return Response{
 		StatusCode: 201,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin": "*",
+		},
 	}, nil
 }
 
