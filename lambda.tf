@@ -64,6 +64,8 @@ resource "aws_api_gateway_rest_api" "api" {
       goal_get_all = aws_lambda_function.goal_get_all.invoke_arn
       goal_create = aws_lambda_function.goal_create.invoke_arn
       goal_get = aws_lambda_function.goal_get.invoke_arn
+      goal_action = aws_lambda_function.goal_action.invoke_arn
+      goal_get_completed = aws_lambda_function.goal_get_completed.invoke_arn
     }
   })
 }
@@ -125,6 +127,24 @@ resource "aws_lambda_permission" "goal_get" {
   statement_id = "AllowExectionFromAPIGateway"
   action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.goal_get.function_name
+  principal = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "goal_action" {
+  statement_id = "AllowExectionFromAPIGateway"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.goal_action.function_name
+  principal = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "goal_get_completed" {
+  statement_id = "AllowExectionFromAPIGateway"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.goal_get_completed.function_name
   principal = "apigateway.amazonaws.com"
 
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"

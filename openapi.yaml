@@ -94,6 +94,62 @@ paths:
         timeoutInMillis: 29000
         type: "aws_proxy"
 
+    post:
+      summary: Perform an action on the specified Goal
+      tags:
+        - Goals
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          description: The id of the goal to retrieve
+          schema:
+            type: string
+      requestBody:
+        description: Goal to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalAction"
+      responses:
+        "200":
+          description: The updated Goal information
+      x-amazon-apigateway-integration:
+        uri: ${invoke_arn.goal_action}
+        httpMethod: "POST"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        type: "aws_proxy"
+
+  /xeffect/goals/{goalId}/completed/{date}:
+    get:
+      summary: Returns whether the specified goal was completed on the given day.
+      tags:
+        - Goals
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          description: The id of the goal to retrieve
+          schema:
+            type: string
+        - name: date
+          in: path
+          required: true
+          description: The date to check whether the goal was completed
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Whether the goal was completed on this date
+      x-amazon-apigateway-integration:
+        uri: ${invoke_arn.goal_get_completed}
+        httpMethod: "POST"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        type: "aws_proxy"
+
   /xeffect/version:
     get:
       summary: Display current version
