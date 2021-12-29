@@ -333,7 +333,12 @@ func bringStreakForwardOneDay(ctx context.Context, client *dynamodb.Client, id s
 }
 
 func startNewStreak(ctx context.Context, client *dynamodb.Client, id string, streakDate string, streakDates []string, streakDateIndex int) error {
-	streaks := append(streakDates[:streakDateIndex+1], streakDates[streakDateIndex:]...)
+	var streaks []string
+	if len(streakDates) == 0 {
+		streaks = []string{""}
+	} else {
+		streaks = append(streakDates[:streakDateIndex+1], streakDates[streakDateIndex:]...)
+	}
 	streaks[streakDateIndex] = streakDate
 
 	s, err := attributevalue.MarshalList(streaks)

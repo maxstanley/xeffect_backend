@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/go-playground/validator/v10"
@@ -72,6 +73,8 @@ func handleGoalCreationEvent(ctx context.Context, event Request) (Response, erro
 	}
 
 	client := dynamodb.NewFromConfig(cfg)
+	emptyList, _ := attributevalue.MarshalList([]string{})
+	emptyMap, _ := attributevalue.MarshalMap(map[string]interface{}{})
 
 	input := &dynamodb.PutItemInput{
 		Item: map[string]types.AttributeValue{
@@ -83,6 +86,15 @@ func handleGoalCreationEvent(ctx context.Context, event Request) (Response, erro
 			},
 			"Motivation": &types.AttributeValueMemberS{
 				Value: goal.Motivation,
+			},
+			"BestStreak": &types.AttributeValueMemberN{
+				Value: "0",
+			},
+			"StreakDates": &types.AttributeValueMemberL{
+				Value: emptyList,
+			},
+			"Streaks": &types.AttributeValueMemberM{
+				Value: emptyMap,
 			},
 		},
 		TableName: aws.String(GOAL_TABLE),

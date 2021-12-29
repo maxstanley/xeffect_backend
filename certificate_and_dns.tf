@@ -72,5 +72,5 @@ resource "cloudflare_record" "maxstanley" {
   name = var.subdomain
   value = aws_api_gateway_domain_name.api.cloudfront_domain_name
   type = "CNAME"
-  proxied = true
+  proxied = false
 }
