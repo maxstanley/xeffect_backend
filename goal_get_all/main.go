@@ -17,9 +17,17 @@ type Response events.APIGatewayProxyResponse
 var GOAL_TABLE = "xeffect_goals"
 
 type Goal struct {
-	UUID       string `json:"uuid"`
-	Title      string `json:"title" validate:"required"`
-	Motivation string `json:"motivation" validate:"required"`
+	Uuid        string                `json:"uuid"`
+	Title       string                `json:"title" validate:"required"`
+	Motivation  string                `json:"motivation" validate:"required"`
+	BestStreak  int                   `json:"best_streak"`
+	Streaks     map[string]GoalStreak `json:"streaks"`
+	StreakDates []string              `json:"streak_dates"`
+}
+
+type GoalStreak struct {
+	Length  int               `json:"streak_length"`
+	Partial map[string]string `json:"partial"`
 }
 
 func returnError(err error) (Response, error) {

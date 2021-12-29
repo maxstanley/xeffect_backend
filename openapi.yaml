@@ -121,6 +121,28 @@ paths:
         passthroughBehavior: "when_no_match"
         timeoutInMillis: 29000
         type: "aws_proxy"
+          
+    options:
+      summary: CORS
+      description: Enable CORS by returning correct headers
+      tags:
+        - CORS
+      responses:
+        200:
+          $ref: "#/components/responses/200CORS"
+      x-amazon-apigateway-integration:
+        type: mock
+        timeoutInMillis: 29000
+        passthroughBehavior: "when_no_match"
+        requestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''*'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
 
   /xeffect/goals/{goalId}/completed/{date}:
     get:
